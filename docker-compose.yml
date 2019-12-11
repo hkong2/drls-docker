@@ -1,0 +1,34 @@
+version: "2"
+
+services:
+  crd:
+    image: ${DRLS_NAMESPACE}/crd:0.191210
+    restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
+    ports:
+      - ${CRD_PORT}:8090
+  test-ehr:
+    image: ${DRLS_NAMESPACE}/test-ehr:0.191209
+    restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
+    ports:
+      - ${TEST_EHR_PORT}:8080
+    depends_on:
+      - "crd"
+  keycloak:
+    image: ${DRLS_NAMESPACE}/keycloak:0.191209
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - DB_VENDOR=h2
+    restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
+    ports:
+      - ${KEYCLOAK_PORT}:8080
+  crd-request-generator:
+    image: ${DRLS_NAMESPACE}/crd-request-generator:0.191209
+    restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
+    ports:
+      - ${CRD_REQ_GEN_PORT}:8080
+  dtr:
+    image: ${DRLS_NAMESPACE}/dtr:0.191210
+    restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
+    ports:
+      - ${DTR_PORT}:3005
