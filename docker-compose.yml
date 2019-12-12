@@ -32,3 +32,8 @@ services:
     restart: unless-stopped  # can be set to no, always, on-failure, unless-stopped
     ports:
       - ${DTR_PORT}:3005
+  admin:
+    image: ${DRLS_NAMESPACE}/admin:0.191211
+    restart: unless-stopped
+    ports:
+      - ${ADMIN_PORT}:3009
