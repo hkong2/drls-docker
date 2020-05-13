@@ -7,54 +7,54 @@ services:
   #   ports:
   #     - ${CRD_PORT}:8090
   #   container_name: crd
-  test-ehr:
-    image: ${DRLS_NAMESPACE}/test-ehr:${DRLS_SUITE_VERSION}
+  # test-ehr:
+  #   image: ${DRLS_NAMESPACE}/test-ehr:${DRLS_SUITE_VERSION}
+  #   restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
+  #   ports:
+  #     - ${TEST_EHR_PORT}:8080
+  #   container_name: test-ehr
+  #   stdin_open: true
+  #   tty: true
+  #   entrypoint:
+  #     # - --cpu 2
+  #     # - --io 1
+  #     # - --vm 2
+  #     # - --vm-bytes 128M
+  #     # - --timeout 10s
+  #     # - -m 3g
+  #     - /usr/bin/gradle
+  #     - appRun
+  #   # command: /usr/bin/gradle appRun
+  #   # depends_on:
+  #   #   - "crd"
+  #   volumes:
+  #     # binding this makes it easy to change settings
+  #     #   BUT requires a re-up of docker-compose to take effect after a change is made
+  #     #   without this bind, the default uses whatever resources are in the image at the time the image was built
+  #     - ./test-ehr/shared-with-container/resources:/home/test-ehr/src/main/resources
+  #     # binding this allows the admin component to push these resources to the EHR when it is ready
+  #     - ./test-ehr/shared-with-container/fhirResourcesToLoad:/home/test-ehr/fhirResourcesToLoad
+  keycloak:
+    image: ${DRLS_NAMESPACE}/keycloak:${DRLS_SUITE_VERSION}
+    environment:
+      - KEYCLOAK_USER=${KEYCLOAK_USER}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
+      - DB_VENDOR=h2
+    restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
+    # networks:
+    #   - proxy
+    ports:
+      - ${KEYCLOAK_PORT}:8080
+    container_name: keycloak
+    # volumes:
+    #   - "/var/run/docker.sock:/tmp/docker.sock:ro"
+    #   - "./vhost.d:/etc/nginx/vhost.d:ro"
+  crd-request-generator:
+    image: ${DRLS_NAMESPACE}/crd-request-generator:${DRLS_SUITE_VERSION}
     restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
     ports:
-      - ${TEST_EHR_PORT}:8080
-    container_name: test-ehr
-    stdin_open: true
-    tty: true
-    entrypoint:
-      # - --cpu 2
-      # - --io 1
-      # - --vm 2
-      # - --vm-bytes 128M
-      # - --timeout 10s
-      # - -m 3g
-      - /usr/bin/gradle
-      - appRun
-    # command: /usr/bin/gradle appRun
-    # depends_on:
-    #   - "crd"
-    volumes:
-      # binding this makes it easy to change settings
-      #   BUT requires a re-up of docker-compose to take effect after a change is made
-      #   without this bind, the default uses whatever resources are in the image at the time the image was built
-      - ./test-ehr/shared-with-container/resources:/home/test-ehr/src/main/resources
-      # binding this allows the admin component to push these resources to the EHR when it is ready
-      - ./test-ehr/shared-with-container/fhirResourcesToLoad:/home/test-ehr/fhirResourcesToLoad
-  # keycloak:
-  #   image: ${DRLS_NAMESPACE}/keycloak:${DRLS_SUITE_VERSION}
-  #   environment:
-  #     - KEYCLOAK_USER=${KEYCLOAK_USER}
-  #     - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
-  #     - DB_VENDOR=h2
-  #   restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
-  #   # networks:
-  #   #   - proxy
-  #   ports:
-  #     - ${KEYCLOAK_PORT}:8080
-  #   container_name: keycloak
-  #   # volumes:
-  #   #   - "/var/run/docker.sock:/tmp/docker.sock:ro"
-  #   #   - "./vhost.d:/etc/nginx/vhost.d:ro"
-  # crd-request-generator:
-  #   image: ${DRLS_NAMESPACE}/crd-request-generator:${DRLS_SUITE_VERSION}
-  #   restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
-  #   ports:
-  #     - ${CRD_REQ_GEN_PORT}:3000
-  #   container_name: crd-request-generator
+      - ${CRD_REQ_GEN_PORT}:3000
+    container_name: crd-request-generator
   # dtr:
   #   image: ${DRLS_NAMESPACE}/dtr:${DRLS_SUITE_VERSION}
   #   restart: unless-stopped # can be set to no, always, on-failure, unless-stopped
@@ -75,12 +75,12 @@ services:
       - ${ADMIN_PORT}:3009
     # depends_on: test-ehr
     container_name: admin
-    volumes:
-      # requires binding at the test-ehr service as well to work
-      # used to push FHIR resources to the test-ehr
-      - ./test-ehr/shared-with-container/fhirResourcesToLoad:/home/admin/init/fhirResourcesToLoad
-      # # utils for debugging
-      # - ./admin/utils:/home/admin/utils
+    # volumes:
+    #   # requires binding at the test-ehr service as well to work
+    #   # used to push FHIR resources to the test-ehr
+    #   - ./test-ehr/shared-with-container/fhirResourcesToLoad:/home/admin/init/fhirResourcesToLoad
+    #   # # utils for debugging
+    #   # - ./admin/utils:/home/admin/utils
 # networks:
 #   proxy:
 
