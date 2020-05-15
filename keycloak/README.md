@@ -10,7 +10,7 @@ The only pre-requisite is [docker](https://www.docker.com/) running on your OS.
 
 To run Keycloak for DRLS, run:
 
-`docker run --name keycloak -p 8180:8080 --rm -e DB_VENDOR=h2 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -e PROXY_ADDRESS_FORWARDING=true drls/keycloak:1.0-alpha1`
+`docker run --name keycloak -p 8180:8080 --rm -e DB_VENDOR=h2 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin hkong2/keycloak:0.2-alpha1`
 
 You should change the `KEYCLOAK_USER` and `KEYCLOAK_PASSWORD` to something more secure.
 
@@ -81,9 +81,9 @@ To make a new docker image with this configuration, follow the steps in the next
 
 To build the docker image, run from this project's root (where `Dockerfile` s located):
 
-`docker build . --tag drls/keycloak:1.0-alpha1`
+`docker build . --tag hkong2/keycloak:0.2-alpha1`
 
-adjusting `1.0-alpha1` to the version you like.
+adjusting `0.2-alpha1` to the version you like.
 
 ## Diagnostics
 
